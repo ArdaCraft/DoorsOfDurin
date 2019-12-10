@@ -44,16 +44,20 @@ public class DoorsOfDurin {
         Task.builder().execute(this::refresh).delayTicks(5).submit(this);
     }
 
-    public void add(Door door) {
-        backing.add(door);
-        Door.save(door, dir.resolve(door.getName() + ".nbt"));
+    public synchronized boolean add(Door door) {
+        if (link(door)) {
+            backing.add(door);
+            Door.save(door, dir.resolve(door.getName() + ".nbt"));
+            return true;
+        }
+        return false;
     }
 
-    public List<Door> getDoors() {
+    public synchronized List<Door> getDoors() {
         return doors;
     }
 
-    public void refresh() {
+    public synchronized void refresh() {
         try {
             List<Door> doors = Files.list(dir).parallel()
                     .map(Door::load)

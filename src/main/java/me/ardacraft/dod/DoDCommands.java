@@ -98,8 +98,11 @@ public class DoDCommands extends Cache<DoorBuilder> {
     @Description("Save the door with the given name")
     public void save(@Src Player player, String name) {
         drain(player, "You are not building a door").flatMap(builder -> builder.build(name)).onPass(door -> {
-            plugin.add(door);
-            Fmt.info("Saved door ").stress(door.getName()).tell(player);
+            if (plugin.add(door)) {
+                Fmt.info("Saved door ").stress(door.getName()).tell(player);
+            } else {
+                Fmt.error("Failed to link door to it's animation").tell(player);
+            }
         }).onFail(message -> {
             Fmt.error(message).tell(player);
         });
