@@ -4,8 +4,8 @@ plugins {
     id "java"
 }
 
-group "me.dags"
-version "0.0.1-ALPHA-1"
+group "me.ardacraft"
+version "0.0.1"
 def spongeAPI = "7.2.0"
 def spongeChannel = "SNAPSHOT"
 
@@ -15,6 +15,7 @@ sponge {
         name = "DoorsOfDurin"
         version = rootProject.version
         description = "Handles the Moria West-Gate"
+        dependencies { stopmotion {} }
     }
 }
 
@@ -25,14 +26,15 @@ repositories {
 
 dependencies {
     compile "org.spongepowered:spongeapi:${spongeAPI}-${spongeChannel}"
-    shadow "com.github.dags-:Pitaya:0.0.11"
+    compile "com.github.dags-:StopMotion:-SNAPSHOT"
+    shadow "com.github.dags-:Pitaya:0.0.12"
 }
 
 shadowJar {
     minimize()
     configurations = [project.configurations.shadow]
     relocate "me.dags.pitaya.", "${project.group}.${sponge.plugin.id}.libs.pitaya."
-    archivesBaseName  = "${sponge.plugin.meta.name}-${spongeAPI}"
+    archivesBaseName = "${sponge.plugin.meta.name}-${spongeAPI}"
     classifier = null
 }
 
