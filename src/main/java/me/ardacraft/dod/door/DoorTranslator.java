@@ -1,9 +1,9 @@
 package me.ardacraft.dod.door;
 
 import com.google.common.reflect.TypeToken;
-import me.dags.motion.trigger.rule.Time;
-import me.dags.pitaya.config.Node;
-import me.dags.pitaya.util.Translators;
+import me.dags.stopmotion.libs.pitaya.config.Node;
+import me.dags.stopmotion.libs.pitaya.util.Translators;
+import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;

@@ -1,28 +1,24 @@
 package me.ardacraft.dod;
 
-import com.flowpowered.math.vector.Vector3i;
 import me.ardacraft.dod.door.DoorBuilder;
-import me.dags.motion.instance.Instance;
-import me.dags.motion.trigger.rule.Time;
-import me.dags.motion.util.recorder.PosRecorder;
-import me.dags.pitaya.cache.Cache;
-import me.dags.pitaya.command.annotation.Command;
-import me.dags.pitaya.command.annotation.Description;
-import me.dags.pitaya.command.annotation.Permission;
-import me.dags.pitaya.command.annotation.Src;
-import me.dags.pitaya.command.fmt.Fmt;
+import me.dags.stopmotion.instance.Instance;
+import me.dags.stopmotion.libs.pitaya.cache.Cache;
+import me.dags.stopmotion.libs.pitaya.command.annotation.Command;
+import me.dags.stopmotion.libs.pitaya.command.annotation.Description;
+import me.dags.stopmotion.libs.pitaya.command.annotation.Permission;
+import me.dags.stopmotion.libs.pitaya.command.annotation.Src;
+import me.dags.stopmotion.libs.pitaya.command.fmt.Fmt;
+import me.dags.stopmotion.trigger.rule.Time;
+import me.dags.stopmotion.util.recorder.PosRecorder;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.world.extent.ArchetypeVolume;
-import org.spongepowered.api.world.schematic.PaletteTypes;
-import org.spongepowered.api.world.schematic.Schematic;
 
 import java.util.concurrent.TimeUnit;
 
-public class DoDCommands extends Cache<DoorBuilder> {
+public class Commands extends Cache<DoorBuilder> {
 
     private final DoorsOfDurin plugin;
 
-    public DoDCommands(DoorsOfDurin plugin) {
+    public Commands(DoorsOfDurin plugin) {
         super(5, TimeUnit.MINUTES, DoorBuilder::new);
         this.plugin = plugin;
     }
@@ -44,13 +40,7 @@ public class DoDCommands extends Cache<DoorBuilder> {
     public void active(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            Vector3i origin = player.getLocation().getBlockPosition();
-            ArchetypeVolume volume = player.getWorld().createArchetypeVolume(pos1, pos2, origin);
-            builder.active = Schematic.builder()
-                    .volume(volume)
-                    .blockPalette(PaletteTypes.LOCAL_BLOCKS.create())
-                    .biomePalette(PaletteTypes.LOCAL_BIOMES.create())
-                    .build();
+            builder.active = SchemHelper.create(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
@@ -63,13 +53,7 @@ public class DoDCommands extends Cache<DoorBuilder> {
     public void inactive(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            Vector3i origin = player.getLocation().getBlockPosition();
-            ArchetypeVolume volume = player.getWorld().createArchetypeVolume(pos1, pos2, origin);
-            builder.inactive = Schematic.builder()
-                    .volume(volume)
-                    .blockPalette(PaletteTypes.LOCAL_BLOCKS.create())
-                    .biomePalette(PaletteTypes.LOCAL_BIOMES.create())
-                    .build();
+            builder.inactive = SchemHelper.create(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);

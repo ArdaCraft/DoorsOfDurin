@@ -1,8 +1,8 @@
 package me.ardacraft.dod.door;
 
 import com.flowpowered.math.vector.Vector3i;
-import me.dags.motion.attachment.Attachment;
-import me.dags.motion.trigger.rule.Time;
+import me.dags.stopmotion.attachment.Attachment;
+import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
@@ -16,7 +16,10 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.schematic.Schematic;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -49,6 +52,7 @@ public class Door implements Attachment, CatalogType {
         origin = builder.origin;
         active = builder.active;
         inactive = builder.inactive;
+        state.set(builder.state);
     }
 
     @Override
@@ -177,8 +181,8 @@ public class Door implements Attachment, CatalogType {
             DataContainer container = DataFormats.NBT.readFrom(in);
             Door door = DoorTranslator.INSTANCE.translate(container);
             return Optional.of(door);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
             return Optional.empty();
         }
     }
@@ -187,8 +191,8 @@ public class Door implements Attachment, CatalogType {
         try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE))) {
             DataView view = DoorTranslator.INSTANCE.translate(door);
             DataFormats.NBT.writeTo(out, view);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 }

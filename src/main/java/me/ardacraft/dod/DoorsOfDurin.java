@@ -2,8 +2,9 @@ package me.ardacraft.dod;
 
 import com.google.inject.Inject;
 import me.ardacraft.dod.door.Door;
-import me.dags.motion.instance.Instance;
-import me.dags.pitaya.command.CommandBus;
+import me.ardacraft.dod.door.DoorTicker;
+import me.dags.stopmotion.instance.Instance;
+import me.dags.stopmotion.libs.pitaya.command.CommandBus;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
 @Plugin(id = "dod")
@@ -35,7 +37,7 @@ public class DoorsOfDurin {
     @Listener
     public void init(GameInitializationEvent event) {
         reload(null);
-        CommandBus.create().register(new DoDCommands(this)).submit();
+        CommandBus.create().register(new Commands(this)).submit();
         Task.builder().execute(new DoorTicker(this)).delayTicks(10).intervalTicks(10).submit(this);
     }
 
@@ -59,17 +61,24 @@ public class DoorsOfDurin {
 
     public synchronized void refresh() {
         try {
+            Files.createDirectories(dir);
+
             List<Door> doors = Files.list(dir).parallel()
                     .map(Door::load)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .filter(DoorsOfDurin::link)
                     .collect(Collectors.toList());
+
             backing.clear();
             backing.addAll(doors);
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    public void saveAsync(Door door) {
+        ForkJoinPool.commonPool().execute(() -> Door.save(door, dir.resolve(door.getName() + ".nbt")));
     }
 
     private static boolean link(Door door) {

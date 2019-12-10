@@ -1,8 +1,8 @@
 package me.ardacraft.dod.door;
 
 import com.flowpowered.math.vector.Vector3i;
-import me.dags.motion.trigger.rule.Time;
-import me.dags.pitaya.util.optional.Result;
+import me.dags.stopmotion.libs.pitaya.util.optional.Result;
+import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.world.schematic.Schematic;
 
 public class DoorBuilder {

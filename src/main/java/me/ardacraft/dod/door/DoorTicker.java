@@ -1,6 +1,6 @@
-package me.ardacraft.dod;
+package me.ardacraft.dod.door;
 
-import me.ardacraft.dod.door.Door;
+import me.ardacraft.dod.DoorsOfDurin;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -39,11 +39,15 @@ public class DoorTicker implements Consumer<Task> {
             int change = door.getStateChange(origin.get().getExtent());
             if (change == Door.ACTIVE) {
                 door.applyActive(origin.get());
+                plugin.saveAsync(door);
             } else if (change == Door.INACTIVE) {
                 door.applyInactive(origin.get());
+                plugin.saveAsync(door);
             }
         }
     }
+
+
 
     private boolean hasTimeChanged(World world) {
         long now = world.getProperties().getWorldTime();
