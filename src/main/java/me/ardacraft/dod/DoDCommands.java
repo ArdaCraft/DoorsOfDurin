@@ -27,6 +27,17 @@ public class DoDCommands extends Cache<DoorBuilder> {
         this.plugin = plugin;
     }
 
+    @Command("dod wand")
+    @Permission("dod.command.wand")
+    @Description("Bind a selection wand to your held item")
+    public void wand(@Src Player player) {
+        PosRecorder.create(player).onPass(r -> {
+            Fmt.info("Successfully created selection wand").tell(player);
+        }).onFail(message -> {
+            Fmt.error(message).tell(player);
+        });
+    }
+
     @Command("dod active")
     @Permission("dod.command.active")
     @Description("Create the schematic that is used while the door is active")
