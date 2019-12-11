@@ -8,8 +8,9 @@ import me.dags.stopmotion.libs.pitaya.command.annotation.Description;
 import me.dags.stopmotion.libs.pitaya.command.annotation.Permission;
 import me.dags.stopmotion.libs.pitaya.command.annotation.Src;
 import me.dags.stopmotion.libs.pitaya.command.fmt.Fmt;
+import me.dags.stopmotion.libs.pitaya.util.SchemHelper;
+import me.dags.stopmotion.libs.pitaya.util.pos.PosRecorder;
 import me.dags.stopmotion.trigger.rule.Time;
-import me.dags.stopmotion.util.recorder.PosRecorder;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void active(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.active = SchemHelper.create(player.getLocation(), pos1, pos2);
+            builder.active = SchemHelper.createLocal(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
@@ -53,7 +54,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void inactive(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.inactive = SchemHelper.create(player.getLocation(), pos1, pos2);
+            builder.inactive = SchemHelper.createLocal(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
@@ -92,8 +93,9 @@ public class Commands extends Cache<DoorBuilder> {
     @Permission("dod.command.save")
     @Description("Save the door with the given name")
     public void save(@Src Player player, String name) {
-        drain(player, "You are not building a door").flatMap(builder -> builder.build(name)).onPass(door -> {
+        must(player).build(name).onPass(door -> {
             if (plugin.add(door)) {
+                drain(player, "");
                 Fmt.info("Saved door ").stress(door.getName()).tell(player);
             } else {
                 Fmt.error("Failed to link door to it's animation").tell(player);
