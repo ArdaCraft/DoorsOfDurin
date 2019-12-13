@@ -55,11 +55,16 @@ public class DoorTranslator implements DataTranslator<Door> {
         builder.origin = Translators.get(view, ORIGIN, DataTranslators.VECTOR_3_I);
         builder.active = Translators.get(view, ACTIVE, DataTranslators.SCHEMATIC);
         builder.inactive = Translators.get(view, INACTIVE, DataTranslators.SCHEMATIC);
-        return new Door(name, builder);
+        return new Door(name, builder, view);
     }
 
     @Override
     public DataContainer translate(Door door) throws InvalidDataException {
+        if (door.data != null) {
+            door.data.set(STATE, door.getState());
+            return door.data.getContainer();
+        }
+
         return DataContainer.createNew()
                 .set(NAME, door.getName())
                 .set(WORLD, door.getWorld())

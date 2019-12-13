@@ -28,6 +28,6 @@ public class DoorBuilder {
         if (inactive == null) {
             return Result.fail("Inactive schematic not set");
         }
-        return Result.pass(new Door(name, this));
+        return Result.pass(new Door(name, this, null));
     }
 }

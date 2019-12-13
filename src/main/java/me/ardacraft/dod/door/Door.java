@@ -40,11 +40,12 @@ public class Door implements Attachment, CatalogType {
     private final Vector3i origin;
     private final Schematic active;
     private final Schematic inactive;
+    protected final DataView data;
 
     private transient final AtomicInteger state = new AtomicInteger(INACTIVE);
     private transient final AtomicBoolean lock = new AtomicBoolean(false);
 
-    public Door(String name, DoorBuilder builder) {
+    public Door(String name, DoorBuilder builder, DataView dataView) {
         this.name = name;
         link = builder.link;
         time = builder.time;
@@ -52,6 +53,7 @@ public class Door implements Attachment, CatalogType {
         origin = builder.origin;
         active = builder.active;
         inactive = builder.inactive;
+        data = dataView;
         state.set(builder.state);
     }
 

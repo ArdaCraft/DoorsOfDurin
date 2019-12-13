@@ -41,7 +41,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void active(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.active = SchemHelper.createLocal(player.getLocation(), pos1, pos2);
+            builder.active = Helper.createLocal(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
@@ -54,7 +54,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void inactive(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.inactive = SchemHelper.createLocal(player.getLocation(), pos1, pos2);
+            builder.inactive = Helper.createLocal(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
