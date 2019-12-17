@@ -28,19 +28,7 @@ public class Helper {
     private static final DataQuery TILE_Z = DataQuery.of("TileZ");
     private static final DataQuery ENTITIES = DataQuery.of("Entities");
 
-    public static Schematic createGlobal(Location<World> origin, Vector3i pos1, Vector3i pos2) {
-        ArchetypeVolume volume = origin.getExtent().createArchetypeVolume(pos1, pos2, origin.getBlockPosition());
-
-        Schematic schematic = Schematic.builder()
-                .volume(volume)
-                .blockPalette(PaletteTypes.GLOBAL_BLOCKS.create())
-                .biomePalette(PaletteTypes.GLOBAL_BIOMES.create())
-                .build();
-
-        return fix(schematic, origin.getBlockPosition());
-    }
-
-    public static Schematic createLocal(Location<World> origin, Vector3i pos1, Vector3i pos2) {
+    public static DataView create(Location<World> origin, Vector3i pos1, Vector3i pos2) {
         ArchetypeVolume volume = origin.getExtent().createArchetypeVolume(pos1, pos2, origin.getBlockPosition());
 
         Schematic schematic = Schematic.builder()
@@ -49,25 +37,25 @@ public class Helper {
                 .biomePalette(PaletteTypes.LOCAL_BIOMES.create())
                 .build();
 
-        return fix(schematic, origin.getBlockPosition());
+        return fixEntities(schematic, origin.getBlockPosition());
     }
 
     public static Schematic fix(Schematic schematic, Vector3i origin) {
         for (EntityArchetype entity : schematic.getEntityArchetypes()) {
             Class<?> type = entity.getType().getEntityClass();
             if (Hanging.class.isAssignableFrom(type)) {
-                return fixEntities(schematic, origin);
+                return DataTranslators.SCHEMATIC.translate(fixEntities(schematic, origin));
             }
         }
         return schematic;
     }
 
-    private static Schematic fixEntities(Schematic schematic, Vector3i origin) {
+    private static DataView fixEntities(Schematic schematic, Vector3i origin) {
         DataContainer container = DataTranslators.SCHEMATIC.translate(schematic);
         List<DataView> entities = container.getViewList(Helper.ENTITIES).orElse(Collections.emptyList());
 
         if (entities.isEmpty()) {
-            return schematic;
+            return container;
         }
 
         // can't mutate the 'entities' list
@@ -78,7 +66,7 @@ public class Helper {
 
         container.set(Helper.ENTITIES, fixed);
 
-        return DataTranslators.SCHEMATIC.translate(container);
+        return container;
     }
 
     private static DataView fixEntity(DataView view, Vector3i origin) {

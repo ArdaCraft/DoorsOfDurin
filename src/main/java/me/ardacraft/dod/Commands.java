@@ -8,7 +8,6 @@ import me.dags.stopmotion.libs.pitaya.command.annotation.Description;
 import me.dags.stopmotion.libs.pitaya.command.annotation.Permission;
 import me.dags.stopmotion.libs.pitaya.command.annotation.Src;
 import me.dags.stopmotion.libs.pitaya.command.fmt.Fmt;
-import me.dags.stopmotion.libs.pitaya.util.SchemHelper;
 import me.dags.stopmotion.libs.pitaya.util.pos.PosRecorder;
 import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.entity.living.player.Player;
@@ -41,7 +40,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void active(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.active = Helper.createLocal(player.getLocation(), pos1, pos2);
+            builder.active = Helper.create(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);
@@ -54,7 +53,7 @@ public class Commands extends Cache<DoorBuilder> {
     public void inactive(@Src Player player) {
         PosRecorder.getSelection(player).ifPresent((pos1, pos2) -> {
             DoorBuilder builder = must(player);
-            builder.inactive = Helper.createLocal(player.getLocation(), pos1, pos2);
+            builder.inactive = Helper.create(player.getLocation(), pos1, pos2);
             Fmt.info("Copied volume ").stress(pos1).info(" to ").stress(pos2).tell(player);
         }).ifAbsent(() -> {
             Fmt.info("You must select a volume first").tell(player);

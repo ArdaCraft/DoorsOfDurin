@@ -8,6 +8,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.persistence.DataFormats;
+import org.spongepowered.api.data.persistence.DataTranslators;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.util.AABB;
@@ -38,8 +39,8 @@ public class Door implements Attachment, CatalogType {
     private final String world;
     private final String link;
     private final Vector3i origin;
-    private final Schematic active;
-    private final Schematic inactive;
+    private final DataView active;
+    private final DataView inactive;
     protected final DataView data;
 
     private transient final AtomicInteger state = new AtomicInteger(INACTIVE);
@@ -121,11 +122,11 @@ public class Door implements Attachment, CatalogType {
     }
 
     public Schematic getActive() {
-        return active;
+        return DataTranslators.SCHEMATIC.translate(active);
     }
 
     public Schematic getInactive() {
-        return inactive;
+        return DataTranslators.SCHEMATIC.translate(inactive);
     }
 
     public boolean isLocked() {
@@ -152,19 +153,20 @@ public class Door implements Attachment, CatalogType {
     }
 
     public void applyActive(Location<World> origin) {
-        active.apply(origin, BlockChangeFlags.NONE);
+        getActive().apply(origin, BlockChangeFlags.NONE);
         state.set(ACTIVE);
     }
 
     public void applyInactive(Location<World> origin) {
         removeEntities(origin);
-        inactive.apply(origin, BlockChangeFlags.NONE);
+        getInactive().apply(origin, BlockChangeFlags.NONE);
         state.set(INACTIVE);
     }
 
     private boolean removeEntities(Location<World> origin) {
         Vector3i pos = origin.getBlockPosition();
-        AABB box = new AABB(pos.add(active.getBlockMin()), pos.add(active.getBlockMax()));
+        Schematic schematic = getActive();
+        AABB box = new AABB(pos.add(schematic.getBlockMin()), pos.add(schematic.getBlockMax()));
         for (Entity entity : origin.getExtent().getIntersectingEntities(box)) {
             if (entity instanceof Living) {
                 continue;
