@@ -2,6 +2,7 @@ package me.ardacraft.dod.door;
 
 import com.google.common.reflect.TypeToken;
 import me.dags.stopmotion.libs.pitaya.config.Node;
+import me.dags.stopmotion.libs.pitaya.schematic.SchemUtils;
 import me.dags.stopmotion.libs.pitaya.util.Translators;
 import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.data.DataContainer;
@@ -53,8 +54,8 @@ public class DoorTranslator implements DataTranslator<Door> {
         builder.state = Translators.getInt(view, STATE);
         builder.time = time(view.getView(TIME).orElseThrow(() -> new InvalidDataException("Missing 'time'")));
         builder.origin = Translators.get(view, ORIGIN, DataTranslators.VECTOR_3_I);
-        builder.active = Translators.get(view, ACTIVE, DataTranslators.SCHEMATIC);
-        builder.inactive = Translators.get(view, INACTIVE, DataTranslators.SCHEMATIC);
+        builder.active = SchemUtils.translate(view.getView(ACTIVE).orElseThrow(() -> new InvalidDataException("Missing 'active'")));
+        builder.inactive = SchemUtils.translate(view.getView(INACTIVE).orElseThrow(() -> new InvalidDataException("Missing 'inactive'")));
         return new Door(name, builder, view);
     }
 
@@ -72,8 +73,8 @@ public class DoorTranslator implements DataTranslator<Door> {
                 .set(STATE, door.getState())
                 .set(TIME, time(door.getTime()))
                 .set(ORIGIN, DataTranslators.VECTOR_3_I.translate(door.getPosition()))
-                .set(ACTIVE, DataTranslators.SCHEMATIC.translate(door.getActive()))
-                .set(INACTIVE, DataTranslators.SCHEMATIC.translate(door.getInactive()));
+                .set(ACTIVE, SchemUtils.translate(door.getActive()))
+                .set(INACTIVE, SchemUtils.translate(door.getInactive()));
     }
 
     private DataContainer time(Time time) {

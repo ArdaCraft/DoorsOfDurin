@@ -8,7 +8,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.persistence.DataFormats;
-import org.spongepowered.api.data.persistence.DataTranslators;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.util.AABB;
@@ -39,8 +38,8 @@ public class Door implements Attachment, CatalogType {
     private final String world;
     private final String link;
     private final Vector3i origin;
-    private final DataView active;
-    private final DataView inactive;
+    private final Schematic active;
+    private final Schematic inactive;
     protected final DataView data;
 
     private transient final AtomicInteger state = new AtomicInteger(INACTIVE);
@@ -122,11 +121,11 @@ public class Door implements Attachment, CatalogType {
     }
 
     public Schematic getActive() {
-        return DataTranslators.SCHEMATIC.translate(active);
+        return active;
     }
 
     public Schematic getInactive() {
-        return DataTranslators.SCHEMATIC.translate(inactive);
+        return inactive;
     }
 
     public boolean isLocked() {
