@@ -4,7 +4,7 @@ plugins {
 }
 
 group "me.ardacraft"
-version "0.0.1"
+version "0.0.2"
 def spongeAPI = "7.2.0"
 def spongeChannel = "SNAPSHOT"
 
@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     compile "org.spongepowered:spongeapi:${spongeAPI}-${spongeChannel}"
-    compile "com.github.dags-:StopMotion:-SNAPSHOT"
+    compile "com.github.dags-:StopMotion:0.0.2"
 }
 
 jar {

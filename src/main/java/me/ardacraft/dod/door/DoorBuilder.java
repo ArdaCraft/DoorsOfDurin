@@ -1,9 +1,9 @@
 package me.ardacraft.dod.door;
 
 import com.flowpowered.math.vector.Vector3i;
+import me.dags.stopmotion.libs.pitaya.schematic.PitSchematic;
 import me.dags.stopmotion.libs.pitaya.util.optional.Result;
 import me.dags.stopmotion.trigger.rule.Time;
-import org.spongepowered.api.world.schematic.Schematic;
 
 public class DoorBuilder {
 
@@ -12,8 +12,8 @@ public class DoorBuilder {
     public String link = "";
     public String world;
     public Vector3i origin;
-    public Schematic active;
-    public Schematic inactive;
+    public PitSchematic active;
+    public PitSchematic inactive;
 
     public Result<Door, String> build(String name) {
         if (time == null) {

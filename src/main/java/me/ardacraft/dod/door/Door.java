@@ -2,6 +2,7 @@ package me.ardacraft.dod.door;
 
 import com.flowpowered.math.vector.Vector3i;
 import me.dags.stopmotion.attachment.Attachment;
+import me.dags.stopmotion.libs.pitaya.schematic.PitSchematic;
 import me.dags.stopmotion.trigger.rule.Time;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.Sponge;
@@ -38,8 +39,8 @@ public class Door implements Attachment, CatalogType {
     private final String world;
     private final String link;
     private final Vector3i origin;
-    private final Schematic active;
-    private final Schematic inactive;
+    private final PitSchematic active;
+    private final PitSchematic inactive;
     protected final DataView data;
 
     private transient final AtomicInteger state = new AtomicInteger(INACTIVE);
@@ -165,7 +166,7 @@ public class Door implements Attachment, CatalogType {
     private boolean removeEntities(Location<World> origin) {
         Vector3i pos = origin.getBlockPosition();
         Schematic schematic = getActive();
-        AABB box = new AABB(pos.add(schematic.getBlockMin()), pos.add(schematic.getBlockMax()));
+        AABB box = new AABB(pos.add(schematic.getBlockMin()), pos.add(schematic.getBlockMax()).add(Vector3i.ONE));
         for (Entity entity : origin.getExtent().getIntersectingEntities(box)) {
             if (entity instanceof Living) {
                 continue;
